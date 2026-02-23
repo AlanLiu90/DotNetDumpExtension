@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Description>A custom dotnet-dump extension providing additional diagnostic commands.</Description>
+    <!-- Suppress version-conflict warning from the dotnet-dump reference assemblies -->
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    References to dotnet-dump's bundled assemblies.
+    These are NOT copied to the output (Private=false) because dotnet-dump already
+    loads them from its own directory at runtime via the ExtensionLoadContext.
+  -->
+  <PropertyGroup>
+    <DotnetDumpLibPath>$(USERPROFILE)\.dotnet\tools\.store\dotnet-dump\9.0.661903\dotnet-dump\9.0.661903\tools\net8.0\any</DotnetDumpLibPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\treemap.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Diagnostics.DebugServices">
+      <HintPath>$(DotnetDumpLibPath)\Microsoft.Diagnostics.DebugServices.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Microsoft.Diagnostics.Runtime">
+      <HintPath>$(DotnetDumpLibPath)\Microsoft.Diagnostics.Runtime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
