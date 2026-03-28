@@ -91,8 +91,6 @@ public class HeapRefsCommand : CommandBase
         int withParents    = 0;
         int withoutParents = 0;
 
-        var distinctParents = new HashSet<ulong>();
-
         foreach (KeyValuePair<ulong, string> kvp in typeNames)
         {
             ulong  addr     = kvp.Key;
@@ -113,12 +111,10 @@ public class HeapRefsCommand : CommandBase
                 continue;
             }
 
-            distinctParents.Clear();
-            distinctParents.UnionWith(parentList);
-            double weight = 1.0 / distinctParents.Count;
+            double weight = 1.0 / parentList.Count;
             withParents++;
 
-            foreach (ulong parentAddr in distinctParents)
+            foreach (ulong parentAddr in parentList)
             {
                 string parentType = typeNames.TryGetValue(parentAddr, out string pt) ? pt : "";
                 if (!tallies.TryGetValue(parentType, out double current))

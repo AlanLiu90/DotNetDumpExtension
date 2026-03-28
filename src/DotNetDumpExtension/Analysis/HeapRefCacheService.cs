@@ -35,9 +35,8 @@ public class HeapRefCacheService
     }
 
     /// <summary>
-    /// Child address → list of parent addresses that directly reference it.
-    /// The same parent may appear multiple times if multiple fields point to
-    /// the same child; callers must deduplicate as needed.
+    /// Child address → sorted, deduplicated list of parent addresses that
+    /// directly reference it.
     /// </summary>
     public Dictionary<ulong, List<ulong>> ReverseRefs
     {
@@ -99,6 +98,23 @@ public class HeapRefCacheService
 
                 if (visited.Add(child.Address))
                     stack.Push(child.Address);
+            }
+        }
+
+        foreach (List<ulong> parents in reverseRefs.Values)
+        {
+            if (parents.Count > 1)
+            {
+                parents.Sort();
+
+                int write = 1;
+                for (int read = 1; read < parents.Count; read++)
+                {
+                    if (parents[read] != parents[write - 1])
+                        parents[write++] = parents[read];
+                }
+
+                parents.RemoveRange(write, parents.Count - write);
             }
         }
 
